@@ -45,16 +45,6 @@ const columns: TableProps<DataType>["columns"] = [
       </>
     ),
   },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
 ];
 
 type UserTableProps = {
