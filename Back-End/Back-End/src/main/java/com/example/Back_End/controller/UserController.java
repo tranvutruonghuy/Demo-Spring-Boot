@@ -2,6 +2,7 @@ package com.example.Back_End.controller;
 
 import com.example.Back_End.dto.request.UserCreationRequest;
 import com.example.Back_End.dto.request.UserUpdateRequest;
+import com.example.Back_End.dto.response.ApiResponse;
 import com.example.Back_End.entity.User;
 import com.example.Back_End.service.UserService;
 import jakarta.validation.Valid;
@@ -19,8 +20,11 @@ public class UserController {
 
 
     @PostMapping()
-    User createUser(@RequestBody @Valid UserCreationRequest userCreationRequest) {
-        return userService.createUser(userCreationRequest);
+    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest userCreationRequest) {
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+
+        apiResponse.setResult(userService.createUser(userCreationRequest));
+        return apiResponse;
     }
 
     @GetMapping
