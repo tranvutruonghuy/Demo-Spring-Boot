@@ -1,8 +1,8 @@
 package com.example.Back_End.controller;
 
 import com.example.Back_End.dto.request.UserCreationRequest;
+import com.example.Back_End.dto.request.UserUpdateRequest;
 import com.example.Back_End.entity.User;
-import com.example.Back_End.repository.UserRepository;
 import com.example.Back_End.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +15,31 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
     @PostMapping()
-    public User createUser(@RequestBody UserCreationRequest userCreationRequest) {
+    User createUser(@RequestBody UserCreationRequest userCreationRequest) {
         return userService.createUser(userCreationRequest);
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
+    List<User> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/{userId}")
+    User getUserByid(@PathVariable("userId") String userId) {
+        return userService.getUserById(userId);
+    }
+
+    @PutMapping("/{userId}")
+    User updateUser(@PathVariable("userId") String userId, @RequestBody UserUpdateRequest request) {
+        return userService.updateUser(userId, request);
+    }
+
+    @DeleteMapping("/{userId}")
+    String deleteUser(@PathVariable("userId") String userId) {
+        userService.deleteUser(userId);
+        return "User deleted successfully";
     }
 }
