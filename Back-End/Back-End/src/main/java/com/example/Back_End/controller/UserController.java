@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -29,8 +30,11 @@ public class UserController {
     }
 
     @GetMapping
-    List<User> getAllUsers() {
-        return userService.getAllUsers();
+    ApiResponse<List<User>> getAllUsers() {
+        ApiResponse<List<User>> apiResponse = new ApiResponse<>();
+
+        apiResponse.setResult(userService.getAllUsers());
+        return apiResponse;
     }
 
     @GetMapping("/{userId}")

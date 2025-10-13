@@ -63,14 +63,21 @@ export const AddNewStudentModal = ({
         <Form.Item
           name="username"
           label="Tên đăng nhập"
-          rules={[{ required: true, message: "Vui lòng nhập tên đăng nhập!" }]}
+          rules={[
+            { required: true, message: "Vui lòng nhập tên đăng nhập!" },
+            { min: 3, message: "Tên đăng nhập phải có ít nhất 3 ký tự!" },
+            { max: 20, message: "Tên đăng nhập không được vượt quá 20 ký tự!" },
+          ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           name="password"
           label="Mật khẩu"
-          rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+          rules={[
+            { required: true, message: "Vui lòng nhập mật khẩu!" },
+            { min: 8, message: "Mật khẩu phải có ít nhất 8 ký tự!" },
+          ]}
         >
           <Input.Password />
         </Form.Item>

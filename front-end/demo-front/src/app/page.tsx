@@ -43,8 +43,12 @@ export default function Home() {
       );
       setData(studentsData);
     } catch (error) {
-      messageApi.error("Lỗi khi tải dữ liệu sinh viên!");
-      console.error(error);
+      if (error instanceof Error) {
+        messageApi.error(error.message);
+      } else {
+        messageApi.error("Lỗi khi tải dữ liệu sinh viên!");
+      }
+      console.error("Error fetching student data:", error);
     } finally {
       setIsTableLoading(false);
     }
@@ -69,7 +73,11 @@ export default function Home() {
       });
       await getStudentData();
     } catch (error) {
-      messageApi.error("Thêm sinh viên mới thất bại!");
+      if (error instanceof Error) {
+        messageApi.error(error.message);
+      } else {
+        messageApi.error("Thêm sinh viên mới thất bại!");
+      }
       console.error("Failed to add new student:", error);
     } finally {
       setIsSubmitting(false);
@@ -86,13 +94,13 @@ export default function Home() {
     setIsEditModalOpen(true);
   };
 
-  const handleUpdateStudent = async (values: any) => {
+  const handleUpdateStudent = async (student: Student) => {
     setIsUpdating(true);
     try {
-      console.log("Updating student:", values);
+      await DataService.updateStudent(student);
       messageApi.success("Cập nhật thông tin sinh viên thành công!");
-      setIsEditModalOpen(false);
       await getStudentData();
+      setIsEditModalOpen(false);
     } catch (error) {
       messageApi.error("Cập nhật thông tin thất bại!");
       console.error("Failed to update student:", error);
@@ -106,7 +114,6 @@ export default function Home() {
     messageApi.info(
       `Chức năng xóa cho sinh viên ID "${studentId}" chưa được cài đặt.`
     );
-    // TODO: Gọi API để xóa sinh viên và tải lại danh sách
   };
 
   return (

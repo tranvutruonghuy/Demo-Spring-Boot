@@ -23,7 +23,6 @@ export const EditUserModal = ({
 }: EditUserModalProps) => {
   const [form] = Form.useForm();
 
-  // Sử dụng useEffect để cập nhật giá trị cho form mỗi khi `student` thay đổi
   useEffect(() => {
     if (open && student) {
       form.setFieldsValue({
