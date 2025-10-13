@@ -9,16 +9,19 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
+
     @PostMapping()
     public User createUser(@RequestBody UserCreationRequest userCreationRequest) {
         return userService.createUser(userCreationRequest);
     }
+
 
     @GetMapping
     public List<User> getAllUsers() {

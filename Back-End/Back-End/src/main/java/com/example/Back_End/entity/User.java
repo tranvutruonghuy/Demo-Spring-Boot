@@ -22,7 +22,6 @@ public class User {
 
     private LocalDate dob;
 
-
     public String getId() {
         return id;
     }

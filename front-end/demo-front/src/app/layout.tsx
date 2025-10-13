@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 import DashboardLayout from "./components/DashboardLayout";
 import { ThemeProvider } from "../contexts/ThemeContext";
 
@@ -27,9 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeProvider>
-          <DashboardLayout>{children}</DashboardLayout>
-        </ThemeProvider>
+        <AntdRegistry>
+          <ThemeProvider>
+            <DashboardLayout>{children}</DashboardLayout>
+          </ThemeProvider>
+        </AntdRegistry>
       </body>
     </html>
   );
