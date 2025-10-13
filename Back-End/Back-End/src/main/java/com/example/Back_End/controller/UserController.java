@@ -4,6 +4,7 @@ import com.example.Back_End.dto.request.UserCreationRequest;
 import com.example.Back_End.dto.request.UserUpdateRequest;
 import com.example.Back_End.dto.response.ApiResponse;
 import com.example.Back_End.entity.User;
+import com.example.Back_End.repository.UserRepository;
 import com.example.Back_End.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -28,8 +30,11 @@ public class UserController {
     }
 
     @GetMapping
-    List<User> getAllUsers() {
-        return userService.getAllUsers();
+    ApiResponse<List<User>> getAllUsers() {
+        ApiResponse<List<User>> apiResponse = new ApiResponse<>();
+
+        apiResponse.setResult(userService.getAllUsers());
+        return apiResponse;
     }
 
     @GetMapping("/{userId}")

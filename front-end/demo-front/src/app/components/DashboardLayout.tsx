@@ -26,9 +26,9 @@ const items: MenuProps["items"] = [
     label: <Link href="/">Dashboard</Link>,
   },
   {
-    key: "/configure",
+    key: "/addNew",
     icon: <VideoCameraOutlined />,
-    label: <Link href="/configure">Configure</Link>,
+    label: <Link href="/addNew">Add new</Link>,
   },
 ];
 
@@ -37,7 +37,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
 
   const selectedKeys = React.useMemo<MenuProps["selectedKeys"]>(() => {
-    if (pathname?.startsWith("/configure")) return ["/configure"];
+    if (!pathname) return ["/"];
+
+    const matchingKeys = items
+      ?.map((item) => item?.key)
+      .filter(
+        (key): key is string =>
+          typeof key === "string" && pathname.startsWith(key)
+      );
+
+    if (matchingKeys && matchingKeys.length > 0) {
+      const bestMatch = matchingKeys.reduce((a, b) =>
+        a.length > b.length ? a : b
+      );
+      return [bestMatch];
+    }
     return ["/"];
   }, [pathname]);
 
