@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { UserTable } from "./components/UserTable";
-import { ThemeToggleButton } from "./components/ThemeToggleButton";
+// import { ThemeToggleButton } from "./components/ThemeToggleButton";
 import { useTheme } from "../contexts/ThemeContext";
 import { DataService } from "@/services/DataService";
 import { useEffect, useState } from "react";
@@ -9,8 +9,10 @@ import { Button, message } from "antd";
 import { AddNewStudentModal } from "./components/AddNewStudentModal";
 import { Student } from "@/models/studentModel";
 import { EditUserModal } from "./components/EditUserModal";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const { theme } = useTheme();
   const [data, setData] = useState<Student[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,6 +96,10 @@ export default function Home() {
     setIsEditModalOpen(true);
   };
 
+  const handleEditPageRoute = (student: Student) => {
+    router.push(`/edit/${student.id}`);
+  };
+
   const handleUpdateStudent = async (student: Student) => {
     setIsUpdating(true);
     try {
@@ -119,7 +125,7 @@ export default function Home() {
   return (
     <div style={style}>
       {contextHolder}
-      <ThemeToggleButton />
+      {/* <ThemeToggleButton /> */}
       <Button type="primary" onClick={showModal} style={{ marginBottom: 16 }}>
         Thêm sinh viên mới
       </Button>
@@ -127,6 +133,7 @@ export default function Home() {
         data={data}
         isLoading={isTableLoading}
         onEdit={handleEdit}
+        onEditPageRoute={handleEditPageRoute}
         onDelete={handleDelete}
       />
       <AddNewStudentModal

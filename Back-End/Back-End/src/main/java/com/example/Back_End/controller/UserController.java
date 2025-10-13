@@ -32,7 +32,6 @@ public class UserController {
     @GetMapping
     ApiResponse<List<User>> getAllUsers() {
         ApiResponse<List<User>> apiResponse = new ApiResponse<>();
-
         apiResponse.setResult(userService.getAllUsers());
         return apiResponse;
     }

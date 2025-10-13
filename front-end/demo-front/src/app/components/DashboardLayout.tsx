@@ -26,9 +26,9 @@ const items: MenuProps["items"] = [
     label: <Link href="/">Dashboard</Link>,
   },
   {
-    key: "/addNew",
+    key: "/add",
     icon: <VideoCameraOutlined />,
-    label: <Link href="/addNew">Add new</Link>,
+    label: <Link href="/add">Add new</Link>,
   },
 ];
 
