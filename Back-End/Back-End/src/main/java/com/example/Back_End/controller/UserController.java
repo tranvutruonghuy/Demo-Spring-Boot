@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -17,14 +16,33 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @PostMapping()
-    public User createUser(@RequestBody UserCreationRequest userCreationRequest) {
-        return userService.createUser(userCreationRequest);
+    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest userCreationRequest) {
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+
+        apiResponse.setResult(userService.createUser(userCreationRequest));
+        return apiResponse;
     }
 
-
     @GetMapping
-    public List<User> getAllUsers() {
+    List<User> getAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/{userId}")
+    User getUserByid(@PathVariable("userId") String userId) {
+        return userService.getUserById(userId);
+    }
+
+    @PutMapping("/{userId}")
+    User updateUser(@PathVariable("userId") String userId, @RequestBody @Valid UserUpdateRequest request) {
+        return userService.updateUser(userId, request);
+    }
+
+    @DeleteMapping("/{userId}")
+    String deleteUser(@PathVariable("userId") String userId) {
+        userService.deleteUser(userId);
+        return "User deleted successfully";
     }
 }
