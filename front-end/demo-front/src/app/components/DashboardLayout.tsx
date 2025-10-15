@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const { Header, Sider, Content } = Layout;
 
@@ -35,6 +36,7 @@ const items: MenuProps["items"] = [
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = React.useState(false);
   const pathname = usePathname();
+  const { theme } = useTheme();
 
   const selectedKeys = React.useMemo<MenuProps["selectedKeys"]>(() => {
     if (!pathname) return ["/"];
@@ -119,7 +121,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <Header
           style={{
             padding: 0,
-            background: "#fff",
+            background: theme === "light" ? "#fff" : "#333",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -141,10 +143,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 onClick: () => setCollapsed(!collapsed),
               }
             )}
-            <span style={{ fontWeight: "bold", fontSize: 18 }}>
-              {" "}
-              Dashboard{" "}
-            </span>
           </div>
 
           <div
@@ -170,7 +168,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           style={{
             margin: "88px 16px 24px 16px",
             padding: 24,
-            background: "#fff",
+            background: theme === "light" ? "#fff" : "#333",
             minHeight: 280,
             transition: "margin-left 0.2s",
           }}

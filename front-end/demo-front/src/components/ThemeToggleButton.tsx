@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "../../contexts/ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 export const ThemeToggleButton = () => {
   // Sử dụng custom hook để lấy theme và hàm toggle

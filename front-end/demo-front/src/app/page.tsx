@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { UserTable } from "./components/UserTable";
-// import { ThemeToggleButton } from "./components/ThemeToggleButton";
+import { UserTable } from "../components/UserTable";
+import { ThemeToggleButton } from "../components/ThemeToggleButton";
 import { useTheme } from "../contexts/ThemeContext";
 import { DataService } from "@/services/DataService";
 import { useEffect, useState } from "react";
@@ -125,7 +125,7 @@ export default function Home() {
   return (
     <div style={style}>
       {contextHolder}
-      {/* <ThemeToggleButton /> */}
+      <ThemeToggleButton />
       <Button type="primary" onClick={showModal} style={{ marginBottom: 16 }}>
         Thêm sinh viên mới
       </Button>
