@@ -10,7 +10,10 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
@@ -19,8 +22,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @CrossOrigin(origins = "http://localhost:3000")
+@Slf4j
 public class UserController {
     UserService userService;
+    private final RestClient.Builder builder;
 
 
     @PostMapping()
@@ -33,17 +38,28 @@ public class UserController {
 
     @GetMapping
     ApiResponse<List<UserResponse>> getAllUsers() {
-        ApiResponse<List<UserResponse>> apiResponse = new ApiResponse<>();
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info("Granted Authority: {}", grantedAuthority.getAuthority()));
 
-        apiResponse.setResult(userService.getAllUsers());
-        return apiResponse;
+
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.getAllUsers())
+                .build();
     }
 
     @GetMapping("/{userId}")
-    ApiResponse<UserResponse> getUserByid(@PathVariable("userId") String userId) {
+    ApiResponse<UserResponse> getUserById(@PathVariable("userId") String userId) {
         ApiResponse<UserResponse> apiResponse = new ApiResponse<>();
         apiResponse.setResult(userService.getUserById(userId));
         return apiResponse;
+    }
+
+    @GetMapping("/myInfo")
+    ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getMyInfo())
+                .build();
     }
 
     @PutMapping("/{userId}")

@@ -11,8 +11,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL) //null fields will be excluded when return
 public class ApiResponse <T> {
+    @Builder.Default
     int code = 1000; //default success code
     String message;
     T result;
-
 }

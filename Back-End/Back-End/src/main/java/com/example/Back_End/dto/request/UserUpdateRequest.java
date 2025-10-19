@@ -1,5 +1,6 @@
 package com.example.Back_End.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,11 +14,14 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
 
-    @Size(min = 8, message = "INVALID_PASSWORD")
+    @Size(min = 8, message = "PASSWORD_INVALID")
+    @NotNull(message = "PASSWORD_NULL")
     String password;
 
+    @NotNull(message = "NAME_NULL")
     String name;
 
+    @NotNull(message = "DOB_NULL")
     LocalDate dob;
 
 }
