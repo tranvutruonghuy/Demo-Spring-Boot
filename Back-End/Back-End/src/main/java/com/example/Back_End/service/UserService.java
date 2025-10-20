@@ -8,6 +8,7 @@ import com.example.Back_End.enums.Role;
 import com.example.Back_End.exception.AppException;
 import com.example.Back_End.exception.ErrorCode;
 import com.example.Back_End.mapper.UserMapper;
+import com.example.Back_End.repository.RoleRepository;
 import com.example.Back_End.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.List;
 @Slf4j
 public class UserService {
     UserRepository userRepository;
+    RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     public UserResponse createUser(UserCreationRequest request) {
@@ -43,6 +45,7 @@ public class UserService {
         //user.setRoles(roles);
         return userMapper.toUserResponse(userRepository.save(user));
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUsers() {
@@ -60,6 +63,11 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        log.info("Roles: {}", roles);
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

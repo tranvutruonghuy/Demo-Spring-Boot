@@ -1,6 +1,5 @@
 package com.example.Back_End.dto.response;
 
-import com.example.Back_End.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
@@ -16,5 +15,5 @@ public class UserResponse {
     String username;
     String name;
     LocalDate dob;
-    Set<Role> roles;
+    Set<RoleResponse> roles;
 }

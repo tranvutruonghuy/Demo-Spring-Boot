@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,11 +18,8 @@ public class UserUpdateRequest {
     @Size(min = 8, message = "PASSWORD_INVALID")
     @NotNull(message = "PASSWORD_NULL")
     String password;
-
-    @NotNull(message = "NAME_NULL")
     String name;
-
-    @NotNull(message = "DOB_NULL")
     LocalDate dob;
+    List<String> roles;
 
 }
