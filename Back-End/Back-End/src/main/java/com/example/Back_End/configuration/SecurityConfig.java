@@ -41,7 +41,9 @@ public class SecurityConfig {
 
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()) //decoder: decode jwt of our own, need an interface jwtDecoder() -> Define interface below
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))); //jwtAuthenticationConverter: use to config prefix, claim name, claimDelimiter
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter())) //jwtAuthenticationConverter: use to config prefix, claim name, claimDelimiter
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint()) //catch HttpCode 401
+        );
         //Spring security will turn on csrf as default to project endpoints from attack cross site
         //Do not need now -> disable, otherwise can not access endpoints
         //httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
