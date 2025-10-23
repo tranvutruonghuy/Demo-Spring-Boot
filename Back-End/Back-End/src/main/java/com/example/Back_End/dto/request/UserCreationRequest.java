@@ -1,5 +1,6 @@
 package com.example.Back_End.dto.request;
 
+import com.example.Back_End.validator.DobConstraint;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -13,18 +14,18 @@ import java.time.LocalDate;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserCreationRequest {
-    @Size(min = 3, message = "USERNAME_INVALID")
+    @Size(min = 4, message = "USERNAME_INVALID")
     @NotNull(message = "USERNAME_NULL")
     String username;
 
-    @Size(min = 8, message = "PASSWORD_INVALID")
+    @Size(min = 4, message = "PASSWORD_INVALID")
     @NotNull(message = "PASSWORD_NULL")
     String password;
 
     @NotNull(message = "NAME_NULL")
     String name;
 
-    @NotNull(message = "DOB_NULL")
+    @DobConstraint(min = 16, message = "INVALID_DOB")
     LocalDate dob;
 
 }
