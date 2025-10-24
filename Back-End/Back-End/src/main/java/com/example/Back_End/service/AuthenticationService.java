@@ -2,11 +2,14 @@ package com.example.Back_End.service;
 
 import com.example.Back_End.dto.request.AuthenticationRequest;
 import com.example.Back_End.dto.request.IntrospectRequest;
+import com.example.Back_End.dto.request.LogoutRequest;
 import com.example.Back_End.dto.response.AuthenticationResponse;
 import com.example.Back_End.dto.response.IntrospectResponse;
+import com.example.Back_End.entity.InvalidatedToken;
 import com.example.Back_End.entity.User;
 import com.example.Back_End.exception.AppException;
 import com.example.Back_End.exception.ErrorCode;
+import com.example.Back_End.repository.InvalidatedTokenRepository;
 import com.example.Back_End.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -29,6 +32,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -36,11 +40,17 @@ import java.util.StringJoiner;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
     UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
+    InvalidatedTokenRepository invalidatedTokenRepository;
+//    PasswordEncoder passwordEncoder;
+
     @NonFinal
     @Value( "${jwt.signerKey}")
     protected String SIGNER_KEY;
+
+
+
     public AuthenticationResponse authenticate(AuthenticationRequest request){
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticated){
@@ -57,15 +67,48 @@ public class AuthenticationService {
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
+
+        boolean isValid = true;
+        //This try catch is for persistence in response Api
+        //When we call introspect function, we expect to response an API contains true false information
+        //Therefore, if not try catch here, the response API format will return Errorcode.AUTHENTICATED (check verifyToken fn for more details)
+        try{
+            verifyToken(token);
+        } catch (AppException e) {
+            isValid = false;
+        }
+        return  IntrospectResponse.builder().valid(isValid).build();
+    }
+
+    public void logout(LogoutRequest request) throws ParseException, JOSEException {
+        var signToken = verifyToken(request.getToken());
+
+        String jit = signToken.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jit)
+                .expiryTime(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
+
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
 
         SignedJWT signedJWT = SignedJWT.parse(token);
         Date expityTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified = signedJWT.verify(verifier);
 
-        return  IntrospectResponse.builder().valid(verified && expityTime.after(new Date())).build();
-    }
+        if(!(verified && expityTime.after(new Date())))
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
 
+        if(invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        return signedJWT;
+    }
     private String generateToken(User user){
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
@@ -75,6 +118,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
+                .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
                 .build();
 
