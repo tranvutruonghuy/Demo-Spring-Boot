@@ -1,17 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { UserTable } from "./components/UserTable";
-import { ThemeToggleButton } from "./components/ThemeToggleButton";
-import { useTheme } from "../contexts/ThemeContext";
+import { UserTable } from "../../../components/UserTable";
 import { DataService } from "@/services/DataService";
 import { useEffect, useState } from "react";
 import { Button, message } from "antd";
-import { AddNewStudentModal } from "./components/AddNewStudentModal";
+import { AddNewStudentModal } from "../../components/AddNewStudentModal";
 import { Student } from "@/models/studentModel";
-import { EditUserModal } from "./components/EditUserModal";
+import { EditUserModal } from "../../components/EditUserModal";
+import { useRouter } from "next/navigation";
+import { StudentDataTable } from "../../components/StudentTable";
+import { getstudentColumns } from "../../components/studentColumns";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export default function Home() {
-  const { theme } = useTheme();
+  const router = useRouter();
   const [data, setData] = useState<Student[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTableLoading, setIsTableLoading] = useState(false);
@@ -20,13 +22,6 @@ export default function Home() {
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
-  const style = {
-    backgroundColor: theme === "light" ? "#fff" : "#333",
-    color: theme === "light" ? "#000" : "#fff",
-    minHeight: "100vh",
-    padding: "2rem",
-  };
 
   const getStudentData = async () => {
     setIsTableLoading(true);
@@ -94,6 +89,10 @@ export default function Home() {
     setIsEditModalOpen(true);
   };
 
+  const handleEditPageRoute = (student: Student) => {
+    router.push(`/edit/${student.id}`);
+  };
+
   const handleUpdateStudent = async (student: Student) => {
     setIsUpdating(true);
     try {
@@ -116,19 +115,26 @@ export default function Home() {
     );
   };
 
+  const columns = getstudentColumns({
+    onEdit: handleEdit,
+    onEditPageRoute: handleEditPageRoute,
+    onDelete: handleDelete,
+  });
+
   return (
-    <div style={style}>
+    <div style={{ padding: 20 }}>
       {contextHolder}
-      <ThemeToggleButton />
       <Button type="primary" onClick={showModal} style={{ marginBottom: 16 }}>
         Thêm sinh viên mới
       </Button>
-      <UserTable
+      {/* <UserTable
         data={data}
         isLoading={isTableLoading}
         onEdit={handleEdit}
+        onEditPageRoute={handleEditPageRoute}
         onDelete={handleDelete}
-      />
+      /> */}
+      <StudentDataTable data={data} columns={columns}></StudentDataTable>
       <AddNewStudentModal
         open={isModalOpen}
         onOk={handleAddNewStudent}

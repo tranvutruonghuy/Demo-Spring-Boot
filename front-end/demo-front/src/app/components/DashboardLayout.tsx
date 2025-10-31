@@ -3,15 +3,14 @@
 import React, { Suspense } from "react";
 import { Layout, Menu, Spin } from "antd";
 import type { MenuProps } from "antd";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  VideoCameraOutlined,
-  DashboardOutlined,
-} from "@ant-design/icons";
+import { VideoCameraOutlined, DashboardOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/app/components/AppSidebar";
+import { ModeToggle } from "@/components/ModeToggle";
+import { AppHeader } from "./AppHeader";
 
 const { Header, Sider, Content } = Layout;
 
@@ -21,163 +20,146 @@ type DashboardLayoutProps = {
 
 const items: MenuProps["items"] = [
   {
-    key: "/",
+    key: "/dashboard",
     icon: <DashboardOutlined />,
-    label: <Link href="/">Dashboard</Link>,
+    label: <Link href="/dashboard">Dashboard</Link>,
   },
   {
-    key: "/addNew",
+    key: "/add",
     icon: <VideoCameraOutlined />,
-    label: <Link href="/addNew">Add new</Link>,
+    label: <Link href="/add">Add new</Link>,
   },
 ];
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const [collapsed, setCollapsed] = React.useState(false);
-  const pathname = usePathname();
+  // return (
+  //   <Layout style={{ minHeight: "100vh" }}>
+  //     <Sider
+  //       trigger={null}
+  //       collapsible
+  //       collapsed={collapsed}
+  //       style={{
+  //         background: "#174168",
+  //         position: "fixed",
+  //         left: 0,
+  //         top: 0,
+  //         bottom: 0,
+  //         zIndex: 1000,
+  //         overflow: "auto",
+  //         height: "100vh",
+  //       }}
+  //     >
+  //       <div
+  //         style={{
+  //           height: 32,
+  //           margin: 16,
+  //           display: "flex",
+  //           alignItems: "center",
+  //           justifyContent: "center",
+  //         }}
+  //       >
+  //         {collapsed ? (
+  //           <Image
+  //             src="/EIU_Logo_Square.png"
+  //             alt="EIU Logo"
+  //             width={32}
+  //             height={32}
+  //             priority
+  //           />
+  //         ) : (
+  //           <Image
+  //             src="/EIU_Logo.png"
+  //             alt="EIU Logo"
+  //             width={120}
+  //             height={32}
+  //             priority
+  //           />
+  //         )}
+  //       </div>
+  //       <Suspense fallback={<Spin />}>
+  //         <Menu
+  //           theme="dark"
+  //           mode="inline"
+  //           selectedKeys={selectedKeys}
+  //           items={items}
+  //           style={{ background: "#174168" }}
+  //         />
+  //       </Suspense>
+  //     </Sider>
 
-  const selectedKeys = React.useMemo<MenuProps["selectedKeys"]>(() => {
-    if (!pathname) return ["/"];
+  //     <Layout
+  //       style={{
+  //         marginLeft: collapsed ? 80 : 200,
+  //         transition: "margin-left 0.2s",
+  //       }}
+  //     >
+  //       <Header
+  //         style={{
+  //           padding: 0,
+  //           background: theme === "light" ? "#fff" : "#333",
+  //           display: "flex",
+  //           alignItems: "center",
+  //           justifyContent: "space-between",
+  //           position: "fixed",
+  //           top: 0,
+  //           right: 0,
+  //           left: collapsed ? 80 : 200,
+  //           zIndex: 999,
+  //           transition: "left 0.2s",
+  //           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+  //         }}
+  //       >
+  //         <div style={{ display: "flex", alignItems: "center" }}>
+  //           {React.createElement(
+  //             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+  //             {
+  //               className: "trigger",
+  //               style: { padding: "0 24px", fontSize: 20, cursor: "pointer" },
+  //               onClick: () => setCollapsed(!collapsed),
+  //             }
+  //           )}
+  //         </div>
 
-    const matchingKeys = items
-      ?.map((item) => item?.key)
-      .filter(
-        (key): key is string =>
-          typeof key === "string" && pathname.startsWith(key)
-      );
+  //         <div
+  //           style={{
+  //             display: "flex",
+  //             alignItems: "center",
+  //             gap: 24,
+  //             paddingRight: 24,
+  //           }}
+  //         >
+  //           {/* <ThemeToggle /> */}
+  //           {/* <AvatarDropdown /> */}
+  //           {/* <AntdServerClock
+  //             apiUrl="https://localhost:5026/api/Time/now"
+  //             timeZone="Asia/Ho_Chi_Minh"
+  //             hour12={false}
+  //             showSeconds
+  //           /> */}
+  //         </div>
+  //       </Header>
 
-    if (matchingKeys && matchingKeys.length > 0) {
-      const bestMatch = matchingKeys.reduce((a, b) =>
-        a.length > b.length ? a : b
-      );
-      return [bestMatch];
-    }
-    return ["/"];
-  }, [pathname]);
-
+  //       <Content
+  //         style={{
+  //           margin: "88px 16px 24px 16px",
+  //           padding: 24,
+  //           background: theme === "light" ? "#fff" : "#333",
+  //           minHeight: 280,
+  //           transition: "margin-left 0.2s",
+  //         }}
+  //       >
+  //         {children}
+  //       </Content>
+  //     </Layout>
+  //   </Layout>
+  // );
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        style={{
-          background: "#174168",
-          position: "fixed",
-          left: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 1000,
-          overflow: "auto",
-          height: "100vh",
-        }}
-      >
-        <div
-          style={{
-            height: 32,
-            margin: 16,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {collapsed ? (
-            <Image
-              src="/EIU_Logo_Square.png"
-              alt="EIU Logo"
-              width={32}
-              height={32}
-              priority
-            />
-          ) : (
-            <Image
-              src="/EIU_Logo.png"
-              alt="EIU Logo"
-              width={120}
-              height={32}
-              priority
-            />
-          )}
-        </div>
-        <Suspense fallback={<Spin />}>
-          <Menu
-            theme="dark"
-            mode="inline"
-            selectedKeys={selectedKeys}
-            items={items}
-            style={{ background: "#174168" }}
-          />
-        </Suspense>
-      </Sider>
-
-      <Layout
-        style={{
-          marginLeft: collapsed ? 80 : 200,
-          transition: "margin-left 0.2s",
-        }}
-      >
-        <Header
-          style={{
-            padding: 0,
-            background: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            position: "fixed",
-            top: 0,
-            right: 0,
-            left: collapsed ? 80 : 200,
-            zIndex: 999,
-            transition: "left 0.2s",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center" }}>
-            {React.createElement(
-              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-              {
-                className: "trigger",
-                style: { padding: "0 24px", fontSize: 20, cursor: "pointer" },
-                onClick: () => setCollapsed(!collapsed),
-              }
-            )}
-            <span style={{ fontWeight: "bold", fontSize: 18 }}>
-              {" "}
-              Dashboard{" "}
-            </span>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 24,
-              paddingRight: 24,
-            }}
-          >
-            {/* <ThemeToggle /> */}
-            {/* <AvatarDropdown /> */}
-            {/* <AntdServerClock
-              apiUrl="https://localhost:5026/api/Time/now"
-              timeZone="Asia/Ho_Chi_Minh"
-              hour12={false}
-              showSeconds
-            /> */}
-          </div>
-        </Header>
-
-        <Content
-          style={{
-            margin: "88px 16px 24px 16px",
-            padding: 24,
-            background: "#fff",
-            minHeight: 280,
-            transition: "margin-left 0.2s",
-          }}
-        >
-          {children}
-        </Content>
-      </Layout>
-    </Layout>
+    <SidebarProvider>
+      <AppSidebar />
+      <div className="flex flex-col flex-1">
+        <AppHeader />
+        <main className="flex-1">{children}</main>
+      </div>
+    </SidebarProvider>
   );
 }

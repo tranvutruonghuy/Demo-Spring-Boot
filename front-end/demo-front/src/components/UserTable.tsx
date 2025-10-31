@@ -2,7 +2,7 @@
 "use client";
 
 import { Student } from "@/models/studentModel";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, FormOutlined } from "@ant-design/icons";
 import { Button, Popconfirm, Space, Table, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
@@ -10,6 +10,7 @@ interface UserTableProps {
   data: Student[];
   isLoading: boolean;
   onEdit: (student: Student) => void;
+  onEditPageRoute: (student: Student) => void;
   onDelete: (studentId: number) => void;
 }
 
@@ -17,6 +18,7 @@ export const UserTable = ({
   data,
   isLoading,
   onEdit,
+  onEditPageRoute,
   onDelete,
 }: UserTableProps) => {
   const columns: ColumnsType<Student> = [
@@ -48,8 +50,15 @@ export const UserTable = ({
       width: "10%",
       render: (_, record) => (
         <Space size="middle">
-          <Tooltip title="Chỉnh sửa">
+          <Tooltip title="Chỉnh sửa (Modal)">
             <Button icon={<EditOutlined />} onClick={() => onEdit(record)} />
+          </Tooltip>
+          <Tooltip title="Chỉnh sửa (Trang mới)">
+            <Button
+              icon={<FormOutlined />}
+              onClick={() => onEditPageRoute(record)}
+              type="default"
+            />
           </Tooltip>
           <Tooltip title="Xóa">
             <Popconfirm
