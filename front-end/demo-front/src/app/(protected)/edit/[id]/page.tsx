@@ -15,7 +15,6 @@ import {
   Card,
   Typography,
 } from "antd";
-import { useTheme } from "@/contexts/ThemeContext";
 import dayjs from "dayjs";
 import styles from "./page.module.css";
 
@@ -26,7 +25,6 @@ export default function EditStudentPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { theme } = useTheme();
   const router = useRouter();
   const [student, setStudent] = useState<Student>();
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +42,7 @@ export default function EditStudentPage({
         setStudent(data);
         form.setFieldsValue({
           ...data,
-          dob: data.dob ? dayjs(data.dob) : null,
+          dob: data?.dob ? dayjs(data.dob) : null,
         });
       } catch (error) {
         messageApi.error("Không tìm thấy thông tin sinh viên.");
@@ -80,14 +78,14 @@ export default function EditStudentPage({
 
   if (isLoading) {
     return (
-      <div className={`${styles.container} ${styles[theme]}`}>
+      <div className={`${styles.container}`}>
         <Spin size="large" />
       </div>
     );
   }
 
   return (
-    <div className={`${styles.container} ${styles[theme]}`}>
+    <div className={`${styles.container} `}>
       {contextHolder}
       <Card className={styles.card}>
         <Title level={3}>Chỉnh sửa thông tin sinh viên</Title>

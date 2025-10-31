@@ -13,13 +13,11 @@ import {
   Card,
   Typography,
 } from "antd";
-import { useTheme } from "@/contexts/ThemeContext";
 import styles from "./page.module.css";
 
 const { Title } = Typography;
 
 export default function AddStudentPage() {
-  const { theme } = useTheme();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form] = Form.useForm();
@@ -41,7 +39,7 @@ export default function AddStudentPage() {
   };
 
   return (
-    <div className={`${styles.container} ${styles[theme]}`}>
+    <div className={styles.container}>
       {contextHolder}
       <Card className={styles.card}>
         <Title level={3}>Thêm sinh viên mới</Title>
@@ -49,14 +47,36 @@ export default function AddStudentPage() {
           <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="username" label="Username" rules={[{ required: true }]}>
+          <Form.Item
+            name="username"
+            label="Username"
+            rules={[
+              { required: true },
+              { min: 8, message: "Mật khẩu phải có ít nhất 8 ký tự" },
+            ]}
+          >
             <Input />
           </Form.Item>
+          {/* <Form.Item
+            name="password"
+            label="Password"
+            rules={[
+              { required: true },
+              { min: 8, message: "Mật khẩu phải có ít nhất 8 ký tự" },
+            ]}
+          >
+            <Input />
+          </Form.Item> */}
           <Form.Item name="dob" label="Ngày sinh" rules={[{ required: true }]}>
             <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={isSubmitting} style={{ marginRight: 8 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={isSubmitting}
+              style={{ marginRight: 8 }}
+            >
               Thêm mới
             </Button>
             <Button onClick={() => router.push("/")}>Hủy</Button>
